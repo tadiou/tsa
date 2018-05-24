@@ -40,8 +40,6 @@ angular.module('app', ["ng-fusioncharts"])
 				//Object.entries($scope.rawData["Delta Air Lines"][2010])[0][1].reduce((total, amount) => total + amount)
 				debugger;
 
-
-				// test change
 				// $scope.$apply();
 			});
 		};
