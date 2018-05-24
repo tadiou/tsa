@@ -17,28 +17,183 @@ angular.module('app', ["ng-fusioncharts"])
 
 		$scope.rawData = {};
 
-		$scope.test = {
-			chart: {
-				caption: "Average Loss Per Month",
-				subCaption: "Across All Airlines",
-				theme: "fint"
-			},
+		$scope.graph1attrs = {
+				"caption": "Avg Loss Per Month",
+				"subCaption": "DICKS",
+				"numberprefix": "$",
+				"plotgradientcolor": "",
+				"bgcolor": "FFFFFF",
+				"showalternatehgridcolor": "0",
+				"divlinecolor": "CCCCCC",
+				"showvalues": "0",
+				"showcanvasborder": "0"
 
-			data: []
-		};
+		}
+
+		$scope.graph1categories = [{
+    "category": [{
+        "label": "Jan 10"
+    }, {
+        "label": "Feb 10"
+    }, {
+        "label": "Mar 10"
+    }, {
+        "label": "Apr 10"
+    }, {
+        "label": "May 10"
+    }, {
+        "label": "Jun 10"
+    }, {
+        "label": "Jul 10"
+    }, {
+        "label": "Aug 10"
+    }, {
+        "label": "Sep 10"
+    }, {
+        "label": "Oct 10"
+    }, {
+        "label": "Nov 10"
+    }, {
+        "label": "Dec 10"
+    }, {
+        "label": "Jan 11"
+    },{
+        "label": "Feb 11"
+    },{
+        "label": "Mar 11"
+    },{
+        "label": "Apr 11"
+    },{
+        "label": "May 11"
+    },{
+        "label": "Jun 11"
+    },{
+        "label": "Jul 11"
+    },{
+        "label": "Aug 11"
+    },{
+        "label": "Sep 11"
+    },{
+        "label": "Oct 11"
+    },{
+        "label": "Nov 11"
+    },{
+        "label": "Dec 11"
+    }, {
+        "label": "Jan 12"
+    },{
+        "label": "Feb 12"
+    },{
+        "label": "Mar 12"
+    },{
+        "label": "Apr 12"
+    },{
+        "label": "May 12"
+    },{
+        "label": "Jun 12"
+    },{
+        "label": "Jul 12"
+    },{
+        "label": "Aug 12"
+    },{
+        "label": "Sep 12"
+    },{
+        "label": "Oct 12"
+    },{
+        "label": "Nov 12"
+    },{
+        "label": "Dec 12"
+    }, {
+        "label": "Jan 13"
+    },{
+        "label": "Feb 13"
+    },{
+        "label": "Mar 13"
+    },{
+        "label": "Apr 13"
+    },{
+        "label": "May 13"
+    },{
+        "label": "Jun 13"
+    },{
+        "label": "Jul 13"
+    },{
+        "label": "Aug 13"
+    },{
+        "label": "Sep 13"
+    },{
+        "label": "Oct 13"
+    },{
+        "label": "Nov 13"
+    },{
+        "label": "Dec 13"
+    },]
+}]
+
+		$scope.graph1data = []
 
 		var airportCodes = [];
+
+		var graphObj = function() {
+			var structure = {
+				"seriesname": "What",
+				"data": new Array()
+			}
+			return structure;
+		}
+
+		var valueObj = {
+			"value" : 0
+		}
 
 		//Function to input csv data file
 		function csvData(file) {
 		  d3.csv(file, function(data, index) {
 				captureRawData(data, index);
 		  }).then(function(data) {
-				$scope.rawData["Delta Airlines"]
-				// var obj = Object.entries($scope.rawData).map(([key, value]) => [key, value[2010][0]]).map();
-				//Example of how to calculate what I need
-				//Object.entries($scope.rawData["Delta Air Lines"][2010])[0][1].reduce((total, amount) => total + amount)
-				debugger;
+
+				Object.entries($scope.rawData).forEach(function(airline,value) {
+
+						var pushObject = Object.assign({}, graphObj());
+
+						pushObject["seriesname"] = airline[0]
+
+						Object.entries(airline[1]).forEach(function(year, airline) {
+								Object.entries(year[1]).forEach(function(month, year) {
+										if (month[1] != undefined && month[1].length != 0) {
+											var subObj = Object.assign({}, valueObj);
+											var tempArray = [];
+											subObj["value"] = month[1].reduce((total, amount) => total + amount);
+											pushObject["data"].push(subObj);
+
+										}
+										else {
+											var subObj = Object.assign({}, valueObj);
+											subObj["value"] = 0;
+											pushObject["data"].push(subObj);
+
+										}
+
+									});
+						});
+						debugger
+						$scope.graph1data.push(pushObject)
+					});
+
+
+
+				// });
+				//GETTING THE AIRLINE name
+				// ***** Object.entries($scope.rawData).forEach((airline, value) => console.log(airline[0])) ***** //
+
+				//GETTING THE YEAR AND THE MONTH
+				// var obj = Object.entries($scope.rawData);
+				// obj.forEach
+				// //$scope.rawData["Delta Airlines"]
+				// // var obj = Object.entries($scope.rawData).map(([key, value]) => [key, value[2010][0]]).map();
+				// //Example of how to calculate what I need
+				// //var obj = Object.entries($scope.rawData["Delta Air Lines"][2010])[0][1].reduce((total, amount) => total + amount)
+				// debugger;
 
 				// $scope.$apply();
 			});

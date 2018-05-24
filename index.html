@@ -12,16 +12,18 @@
 
 </head>
 <body ng-controller="ctrl">
-	<!-- <div fusioncharts
+	<div fusioncharts
 		width = "600"
 		height = "400"
-		type = "column2d"
-		dataSource = "{{ test }}" >
-	</div> -->
+		type = "msline"
+		chart = "{{ graph1attrs }}"
+		categories = "{{ graph1categories }}"
+		dataset = "{{ graph1data }}"
+	</div>
 
 	<!-- {{ avgClaimsPerMonth[2010][0] }}
 	{{ avgClaimsPerMonth[2010][1] }}
 	{{ avgClaimsPerMonth[2010][2]}} -->
 
-	{{ rawData }}
+	<!-- {{ rawData }} -->
 </html>
