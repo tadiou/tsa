@@ -1,0 +1,5 @@
+ClaimNumber,DateReceived,IncidentDate,AirportCode,AirportName,AirlineName,ClaimType,ClaimSite,ItemCategory,CloseAmount,Disposition,
+2010011167421,4-Jan-10,1/1/10 0:00,SEA,Seattle-Tacoma International,Delta Air Lines  ,Passenger Property Loss,Checkpoint,Computer & Accessories,"$1,579.40 ",Settle,
+2010010567163,5-Jan-10,1/5/10 0:00,XNA,Northwest Arkansas Regional,American Airlines  ,Passenger Property Loss,Checked Baggage,Cameras; Cameras,$193.98 ,Approve in Full,
+2010012167743,19-Jan-10,1/4/10 0:00,PHX,Phoenix Sky Harbor International,Air Canada,Passenger Property Loss,Checked Baggage,Travel Accessories,$14.95 ,Approve in Full,
+2010012167744,19-Jan-10,1/7/10 12:30,LAS,McCarran International,Virgin Atlantic,Property Damage,Checkpoint,Computer & Accessories,$800.00 ,Approve in Full,

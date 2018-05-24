@@ -1,0 +1,27 @@
+<html ng-app="app">
+<head>
+
+	<!-- Script sourcing for angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.js"></script>
+	<!-- Script sourcing d3 -->
+	<script src="https://d3js.org/d3.v5.js"></script>
+	<script src="app/app.js"></script>
+	<script src="plugins/fusioncharts.js"></script>
+	<script src="plugins/fusioncharts.charts.js"></script>
+	<script type = "text/javascript" src = "plugins/angular-fusioncharts.min.js"></script>
+
+</head>
+<body ng-controller="ctrl">
+	<!-- <div fusioncharts
+		width = "600"
+		height = "400"
+		type = "column2d"
+		dataSource = "{{ test }}" >
+	</div> -->
+
+	<!-- {{ avgClaimsPerMonth[2010][0] }}
+	{{ avgClaimsPerMonth[2010][1] }}
+	{{ avgClaimsPerMonth[2010][2]}} -->
+
+	{{ rawData }}
+</html>
