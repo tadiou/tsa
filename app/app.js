@@ -34,9 +34,14 @@ angular.module('app', ["ng-fusioncharts"])
 		  d3.csv(file, function(data, index) {
 				captureRawData(data, index);
 		  }).then(function(data) {
-				var obj = Object.entries($scope.rawData).map(([key, value]) => [key, value[2010][0]]).map();
+				$scope.rawData["Delta Airlines"]
+				// var obj = Object.entries($scope.rawData).map(([key, value]) => [key, value[2010][0]]).map();
+				//Example of how to calculate what I need
+				//Object.entries($scope.rawData["Delta Air Lines"][2010])[0][1].reduce((total, amount) => total + amount)
 				debugger;
 
+
+				// test change
 				// $scope.$apply();
 			});
 		};
@@ -77,7 +82,6 @@ angular.module('app', ["ng-fusioncharts"])
 		// 	{
 		// 		//Create claims by airport
 		// 		$scope.graph2data[data.AirportCode] = Object.assign({}, yearMonthStructure());
-		//
 		//
 		//
 		// 		//Increment the claims count by one
