@@ -1,9 +1,15 @@
-angular.module('app', ["ng-fusioncharts"])
-	.controller('ctrl', ['$scope', function($scope) {
-
-		var years = [2010, 2011, 2012, 2013];
-		var months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-
+angular.module('app', ['chart.js'])
+	.controller('ctrl', ['$scope', function($scope, $filter) {
+		var years = [2010, 2011, 2012, 2013];										//Array for building object
+		var months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];		//Array for building object
+/*******************************************
+		Make an object with this structure
+		 obj = {
+		 		year: {
+					month: []
+				}
+		 }
+********************************************/
 		var yearMonthStructure = function() {
 			var structure = {}
 			years.forEach(function(year) {
@@ -14,263 +20,277 @@ angular.module('app', ["ng-fusioncharts"])
 			});
 			return structure;
 		}
-
-		$scope.rawData = {};
-
-		$scope.graph1attrs = {
-				"caption": "Avg Loss Per Month",
-				"subCaption": "DICKS",
-				"numberprefix": "$",
-				"plotgradientcolor": "",
-				"bgcolor": "FFFFFF",
-				"showalternatehgridcolor": "0",
-				"divlinecolor": "CCCCCC",
-				"showvalues": "0",
-				"showcanvasborder": "0"
-
-		}
-
-		$scope.graph1categories = [{
-    "category": [{
-        "label": "Jan 10"
-    }, {
-        "label": "Feb 10"
-    }, {
-        "label": "Mar 10"
-    }, {
-        "label": "Apr 10"
-    }, {
-        "label": "May 10"
-    }, {
-        "label": "Jun 10"
-    }, {
-        "label": "Jul 10"
-    }, {
-        "label": "Aug 10"
-    }, {
-        "label": "Sep 10"
-    }, {
-        "label": "Oct 10"
-    }, {
-        "label": "Nov 10"
-    }, {
-        "label": "Dec 10"
-    }, {
-        "label": "Jan 11"
-    },{
-        "label": "Feb 11"
-    },{
-        "label": "Mar 11"
-    },{
-        "label": "Apr 11"
-    },{
-        "label": "May 11"
-    },{
-        "label": "Jun 11"
-    },{
-        "label": "Jul 11"
-    },{
-        "label": "Aug 11"
-    },{
-        "label": "Sep 11"
-    },{
-        "label": "Oct 11"
-    },{
-        "label": "Nov 11"
-    },{
-        "label": "Dec 11"
-    }, {
-        "label": "Jan 12"
-    },{
-        "label": "Feb 12"
-    },{
-        "label": "Mar 12"
-    },{
-        "label": "Apr 12"
-    },{
-        "label": "May 12"
-    },{
-        "label": "Jun 12"
-    },{
-        "label": "Jul 12"
-    },{
-        "label": "Aug 12"
-    },{
-        "label": "Sep 12"
-    },{
-        "label": "Oct 12"
-    },{
-        "label": "Nov 12"
-    },{
-        "label": "Dec 12"
-    }, {
-        "label": "Jan 13"
-    },{
-        "label": "Feb 13"
-    },{
-        "label": "Mar 13"
-    },{
-        "label": "Apr 13"
-    },{
-        "label": "May 13"
-    },{
-        "label": "Jun 13"
-    },{
-        "label": "Jul 13"
-    },{
-        "label": "Aug 13"
-    },{
-        "label": "Sep 13"
-    },{
-        "label": "Oct 13"
-    },{
-        "label": "Nov 13"
-    },{
-        "label": "Dec 13"
-    },]
-}]
-
-		$scope.graph1data = []
-
-		var airportCodes = [];
-
-		var graphObj = function() {
-			var structure = {
-				"seriesname": "What",
-				"data": new Array()
-			}
+//Same idea, slight variance with the month as we need to get track of integers
+		var yearMonthStructureTwo = function() {
+			var structure = {}
+			years.forEach(function(year) {
+				months.forEach(function(month) {
+					structure[year] = structure[year] || {};
+					structure[year][month] = 0;
+				})
+			});
 			return structure;
 		}
 
-		var valueObj = {
-			"value" : 0
+		//Scope variable to store raw data gathered from csv for graph1
+		$scope.rawDataGraph1 = {};
+		//Scope variable to store raw data gathered from csv for graph2
+		$scope.rawDataGraph2 = {};
+
+		//Labels for first graph (Value Loss Per Month)
+		$scope.graph1labels = ['Jan10', "Feb10", "Mar10", "Apr10", "May10", "Jun10", "Jul10", "Aug10", "Sep10", "Oct10", "Nov10", "Dec10",
+		"Jan11", "Feb11", "Mar11", "Apr11", "May11", "Jun11", "Jul11", "Aug11", "Sep11", "Oct11", "Nov11", "Dec11",
+		"Jan12", "Feb12", "Mar12", "Apr12", "May12", "Jun12", "Jul12", "Aug12", "Sep12", "Oct12", "Nov12", "Dec12",
+		"Jan13", "Feb13", "Mar13", "Apr13", "May13", "Jun13", "Jul13", "Aug13", "Sep13", "Oct13", "Nov13", "Dec13"]
+		$scope.graph1DisplayLabels = $scope.graph1labels;
+
+		//Variable to store series names for first graph (Delta, American Airlines etc.)
+		$scope.graph1series = []
+		$scope.graph1DisplaySeries = []
+
+		//Variable to store series name for second graph (SEA, BOS etc.)
+		$scope.graph2series = []
+
+		//Variable to store first graph's data. Should be an array of arrays of length 48 (48 months from 2010-2013)
+		$scope.graph1data =  []
+		$scope.graph1DisplayData = []
+
+		//Variable to filter through Airlines
+		$scope.myIndex = [];
+
+		$scope.airlineFromMonth = new Date('January 1, 2010 03:24:00');
+
+		$scope.airlineToMonth = new Date('December 31, 2013 03:24:00')
+
+		//Variable to store second graph's data. Same format as 1
+		$scope.graph2data = []
+
+		//Sets options for first graph. See ChartJS documentation.
+		$scope.graph1options = {
+		    scales: {
+		      yAxes: [
+		        {
+		          id: 'y-axis-1',
+		          type: 'linear',
+		          display: true,
+		          position: 'left',
+							scaleLabel: {
+								display: true,
+								labelString: "Value Loss Per Month in $"
+							}
+		        }],
+					xAxes: [
+						{
+							id: 'x-axis-1',
+							scaleLabel: {
+								display: true,
+								labelString: "2010-2013 In Months"
+							}
+
+					}],
+		  	},
+				title: {
+						display: true,
+						text: 'TSA Data 2010-2013 Value Loss Per Month',
+						position: 'top'
+				}
 		}
 
+		//Sets options for second graph
+		var airportCodes = [];
+/*
+*
+*
+*													FUNCTIONS FOR GRAPH 1 (VALUE LOSS PER MONTH)
+*
+*
+*/
 		//Function to input csv data file
 		function csvData(file) {
 		  d3.csv(file, function(data, index) {
-				captureRawData(data, index);
+				captureRawDataGraph1(data, index);
 		  }).then(function(data) {
 
-				Object.entries($scope.rawData).forEach(function(airline,value) {
+				/************* GRAPH 1 DATA MANIPULATION ************************************/
+				var numAirlines = 0;														//Keep track of numAirlines to calculate averages
+				var averageArray = new Array(48).fill(0);				//Make an array of length 48 of 0's to hold averages
 
-						var pushObject = Object.assign({}, graphObj());
-
-						pushObject["seriesname"] = airline[0]
-
-						Object.entries(airline[1]).forEach(function(year, airline) {
-								Object.entries(year[1]).forEach(function(month, year) {
+				//Go through each airline object as an array
+				Object.entries($scope.rawDataGraph1).forEach(function(airline, airlineIndex) {
+						//Make the series name the airline name
+						$scope.graph1series.push(airline[0]);
+						//Index for the average array
+						var avgIndex = 0;
+						//Array for graph1 data
+						var dataArray = new Array();
+						//Loop through the year keys as arrays
+						Object.entries(airline[1]).forEach(function(year, yearIndex) {
+							//Loop through the month keys as arrays
+								Object.entries(year[1]).forEach(function(month, monthIndex) {
+									//If the array is undefined or its length is not zero
 										if (month[1] != undefined && month[1].length != 0) {
-											var subObj = Object.assign({}, valueObj);
-											var tempArray = [];
-											subObj["value"] = month[1].reduce((total, amount) => total + amount);
-											pushObject["data"].push(subObj);
-
-										}
+											 //Sum the month array, push it into the temporary array
+											 dataArray.push(month[1].reduce((total, amount) => total + amount));
+											 //Add the sum of the month array to the average correct average array slot
+											 averageArray[avgIndex] += month[1].reduce((total, amount) => total + amount);
+											 //Increment avg array index
+											 avgIndex++;
+										 }
+										//Otherwise push in a zero
 										else {
-											var subObj = Object.assign({}, valueObj);
-											subObj["value"] = 0;
-											pushObject["data"].push(subObj);
-
+											dataArray.push(0);
 										}
+									}); //Brackets for month loop
+								}); //Brackets for year loop
 
-									});
-						});
-						debugger
-						$scope.graph1data.push(pushObject)
-					});
+						//Push data array into the graph1data scope variable
+						$scope.graph1data.push(dataArray)
+
+						//Increment numAirlines
+						numAirlines++;
+
+					}); //Brackets for airline loop
+
+					//Add the average series name at the *END*
+					$scope.graph1series.push("Average All Airlines");
+
+					//Calculate averages using numAirlines
+					averageArray.forEach(function(month, index) {
+						 	averageArray[index] = month / ($scope.graph1series.length - 1);
+					})
+
+					//Push the average into graph1data
+					$scope.graph1data.push(averageArray);
 
 
+				/*************************** GRAPH 2 DATA MANIPULATION ***********************/
 
-				// });
-				//GETTING THE AIRLINE name
-				// ***** Object.entries($scope.rawData).forEach((airline, value) => console.log(airline[0])) ***** //
+				averageArray = new Array(48).fill(0);
+				var numOfAirports = 0;
 
-				//GETTING THE YEAR AND THE MONTH
-				// var obj = Object.entries($scope.rawData);
-				// obj.forEach
-				// //$scope.rawData["Delta Airlines"]
-				// // var obj = Object.entries($scope.rawData).map(([key, value]) => [key, value[2010][0]]).map();
-				// //Example of how to calculate what I need
-				// //var obj = Object.entries($scope.rawData["Delta Air Lines"][2010])[0][1].reduce((total, amount) => total + amount)
-				// debugger;
+				Object.entries($scope.rawDataGraph2).forEach(function(airport, airportIndex) {
 
-				// $scope.$apply();
-			});
-		};
+					avgIndex = 0;
+					numOfAirports++;
 
-		//Apply function
-		csvData("data/claims.csv");
+					var dataArray = new Array();
 
+					$scope.graph2series.push(airport[0])
+
+					Object.entries(airport[1]).forEach(function(year, yearIndex) {
+						Object.entries(year[1]).forEach(function(month, monthIndex) {
+								averageArray[avgIndex] += month[1];
+								dataArray.push(month[1]);
+								avgIndex++;
+						}); //Brackets for month loop
+					});//Brackets for year loop
+
+					$scope.graph2data.push(dataArray);
+
+				}); //Brackets for airport loop
+
+				averageArray.forEach(function(month, index) {
+					averageArray[index] = month / ($scope.graph2series.length - 1)
+				});
+
+				$scope.graph2series.push("Average");
+				$scope.graph2data.push(averageArray);
+
+				$scope.graph1DisplayData.push($scope.graph1data[$scope.graph1data.length - 1]);
+				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
+
+				debugger
+				$scope.$apply();
+
+			}); //Brackets for .then function
+		}; //Brackets for csv function
+
+		//Convert my number string to an integer
 		function convertDollarToInteger(dollar) {
 			return Number(dollar.replace(/[^0-9\.-]+/g,""));
 		}
 
-		function captureRawData(data, index) {
-			var d = new Date(data.IncidentDate)		//Convert CSV date into a real date
-			var month = d.getMonth();				//Get month
-			var year = d.getFullYear();				//Get year
+		//Capture raw data from csv
+		function captureRawDataGraph1(data, index) {
+					var d = new Date(data.IncidentDate)		//Convert CSV date into a real date
+					var month = d.getMonth();							//Get month
+					var year = d.getFullYear();						//Get year
 
-			//If the close amount is not a '-' then turn it into an integer
-			if (data.CloseAmount === '-') return;
-			value = convertDollarToInteger(data.CloseAmount);
-			if (!value) return;
-			try {
-				var airlineName = data.AirlineName.trim();
-				$scope.rawData[airlineName] = $scope.rawData[airlineName] || Object.assign({}, yearMonthStructure());
-				$scope.rawData[airlineName][year][month].push(value);
-				return;
-			} catch (e) {
-				// debugger;
+					//If the close amount is a '-', return
+					if (data.CloseAmount === '-') return;
+
+					//Convert value to dollar
+					value = convertDollarToInteger(data.CloseAmount);
+
+					//If there's no value return
+					if (!value) return;
+
+					//Trim spaces off the airline name
+					var airlineName = data.AirlineName.trim();
+
+					//Airpot code variable
+					var airportCode = data.AirportCode
+
+					//Raw data variable [airlineName] is either itself or is the result of the yearMonthStructure function
+					$scope.rawDataGraph1[airlineName] = $scope.rawDataGraph1[airlineName] || Object.assign({}, yearMonthStructure());
+
+					//Push the value into month array
+					$scope.rawDataGraph1[airlineName][year][month].push(value);
+
+					//Raw data variable airport code is either itself or the result of the yearMonthStructure function
+					$scope.rawDataGraph2[airportCode] = $scope.rawDataGraph2[airportCode] || Object.assign({}, yearMonthStructureTwo());
+
+					//Increment num of claims by 1
+					$scope.rawDataGraph2[airportCode][year][month] += 1;
+
+					//Return!
+					return;
 			}
-		}
 
-		// function graph2(data, index) {
-		// 	//										//
-		// 	//		DATA PROCESSING FOR GRAPH 2 	//
-		// 	//										//
-		//
-		// 	// If the airport code isn't in my reference array. Add the airport code
-		// 	if (!airportCodes.includes(data.AirportCode))
-		// 	{
-		// 		//Create claims by airport
-		// 		$scope.graph2data[data.AirportCode] = Object.assign({}, yearMonthStructure());
-		//
-		//
-		// 		//Increment the claims count by one
-		// 		$scope.graph2data[data.AirportCode][year][month] += 1;
-		//
-		// 		//Increase the total number of airports
-		// 		$scope.totalNumAirports++;
-		//
-		// 		//Put the airport code in my reference array
-		// 		airportCodes.push(data.AirportCode)
-		//
-		// 		//Same issue as in graph1
-		// 		if ($scope.totalNumAirports == 404)
-		// 		{
-		// 			for (i = 2010; i < 2014; i++)
-		// 			{
-		// 				for (j = 0; j < 12; j++)
-		// 				{
-		// 					var avg = $scope.avgClaimsPerMonth[i][j] = $scope.totalClaimsPerMonth[i][j] / $scope.totalNumAirports;
-		// 					$scope.test.data.push({label: "name", value: avg});
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		//Increment the airport object by one in the proper year and date
-		// 		$scope.graph2data[data.AirportCode][year][month] += 1;
-		//
-		// 		//Increment the total claims per year per month by one
-		// 		$scope.totalClaimsPerMonth[year][month] += 1;
-		//
-		// 		//Calculate averages
-		// 		$scope.avgClaimsPerMonth[year][month] = $scope.totalClaimsPerMonth[year][month] / $scope.totalNumAirports;
-		//
-		// 	}
-		// }
+		//Run csvData funciton
+		csvData("data/claims.csv");
+
+		//Filter function
+		$scope.refresh = function (){
+
+				$scope.graph1DisplaySeries = []
+				$scope.graph1DisplayData = []
+
+				$scope.airlineFromMonth = new Date($scope.airlineFromMonth)
+
+				var monthBegin = $scope.airlineFromMonth.getMonth();
+				var yearBegin = $scope.airlineFromMonth.getFullYear();
+
+				$scope.airlineToMonth = new Date($scope.airlineToMonth)
+
+				var monthEnd = $scope.airlineToMonth.getMonth();
+				var yearEnd = $scope.airlineToMonth.getFullYear();
+
+				yearBegin = yearBegin % 10 * 12;
+				yearEnd = yearEnd % 10 * 12;
+
+				var beginIndex = monthBegin + yearBegin;
+				var endIndex = monthEnd + yearEnd + 1;
+
+				$scope.graph1DisplayLabels = $scope.graph1labels.slice(beginIndex,endIndex)
+				console.log(beginIndex);
+				console.log(endIndex);
+				console.log($scope.graph1labels[endIndex]);
+
+				//Make sure average vl/m is included in every chart
+
+				var tempArray = $scope.graph1data[$scope.graph1data.length -1].slice(beginIndex,endIndex);
+				$scope.graph1DisplayData.push(tempArray);
+
+				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
+
+				//Iterate over number of entries in my index. Give correct data to display
+				for (i = 0; i < $scope.myIndex.length; i++)
+				{
+						tempArray = $scope.graph1data[parseInt($scope.myIndex[i])].slice(beginIndex, endIndex)
+						$scope.graph1DisplaySeries.push($scope.graph1series[parseInt($scope.myIndex[i])]);
+						$scope.graph1DisplayData.push(tempArray);
+				}
+		};
 
 	}])

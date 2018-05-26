@@ -6,24 +6,29 @@
 	<!-- Script sourcing d3 -->
 	<script src="https://d3js.org/d3.v5.js"></script>
 	<script src="app/app.js"></script>
-	<script src="plugins/fusioncharts.js"></script>
-	<script src="plugins/fusioncharts.charts.js"></script>
-	<script type = "text/javascript" src = "plugins/angular-fusioncharts.min.js"></script>
+	<!-- <script src="plugins/fusioncharts.js"></script>
+	<script src="plugins/fusioncharts.charts.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+	<script src="plugins/angular-chart.min.js"></script>
 
 </head>
 <body ng-controller="ctrl">
-	<div fusioncharts
-		width = "600"
-		height = "400"
-		type = "msline"
-		chart = "{{ graph1attrs }}"
-		categories = "{{ graph1categories }}"
-		dataset = "{{ graph1data }}"
-	</div>
+	<canvas id = "line" class = "chart chart-line" chart-data = "graph1DisplayData"
+	chart-labels = "graph1DisplayLabels" chart-series = "graph1DisplaySeries"
+	chart-options = "graph1options"></canvas>
 
-	<!-- {{ avgClaimsPerMonth[2010][0] }}
-	{{ avgClaimsPerMonth[2010][1] }}
-	{{ avgClaimsPerMonth[2010][2]}} -->
+	<br>
+	<!-- <canvas id = "bar" class = "chart chart-bar" chart-data = "graph2data"
+	chart-labels = "graph1labels" chart-series = "graph2series"
+	chart-options = "graph2options"></canvas> -->
+	<select multiple ng-model = "myIndex">
+		<option ng-click = "refresh()" ng-repeat = "airline in graph1series" value = {{graph1series.indexOf(airline)}} name = {{ airline }} > {{ airline }} </option>
+	</select>
+	<label for "airlineFromMonth">From:</label>
+	<input id = "airlineFromMonth" name = "airlineFromMonth" type = "month" ng-Mouseup = "refresh()" ng-model = "airlineFromMonth" min = "2010-01" max = "2013-12">
+	<label for "airlineToMonth">To:</label>
+	<input id = "airlineToMonth" name = "airlineToMonth" type = "month" ng-Mouseup = "refresh()" ng-model = "airlineToMonth" min = "2010-01" max = "2013-12">
 
-	<!-- {{ rawData }} -->
+	{{ airlineFromMonth }}
+	{{ airlineToMonth }}
 </html>
