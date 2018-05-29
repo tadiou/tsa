@@ -24,10 +24,23 @@
 			chart-labels = "graphDisplayLabels" chart-series = "graph2DisplaySeries"
 			chart-options = "graph2options"></canvas>
 			<fieldset>
+					<legend>Stats</legend>
+					<ul>
+						<li class = "title">Last Claim Entered:</li>
+						<li>{{ lastClaimEntered }}</li>
+						<li class = "title">Total Number of Airports:</li>
+						<li>{{ totalAirports }}</li>
+						<li class = "title">Total Claims:</li>
+						<li>{{ totalClaims }}</li>
+					</ul>
+			</fieldset>
+			<fieldset>
 					<legend>Filter</legend>
-					<label  class = "selectLabels" for = "filterAirportSelector">By Airport</label>
+					<label for = "filterAirport">Search:</label>
+					<input type = "text" ng-model = "filterAirport" name = "filterAirport">
+					<br><br>
 					<select id = "filterAirportSelector" multiple ng-model = "myIndex2">
-						<option ng-click = "refreshG2()" ng-repeat = "airport in graph2series" value = {{graph2series.indexOf(airport)}} name = {{ airport }} > {{ airport }} </option>
+						<option ng-click = "refreshG2()" ng-repeat = "airport in graph2series | orderBy: airport | filter : filterAirport" value = {{graph2series.indexOf(airport)}} name = {{ airport }} > {{ airport }} </option>
 					</select>
 					<hr>
 					Time Window
@@ -40,9 +53,12 @@
 			</fieldset>
 			<fieldset>
 					<legend>Add A Claim</legend>
+					<label for = "filterAirportSelector">Search:</label>
+					<input type = "text" ng-model = "filterAirportSelector" name = "filterAirportSelector">
+					<br>
 					<label for = "airportSelector">Airport</label>
 					<select id = "airportSelector" ng-model = "inputAirport">
-						<option ng-repeat = "airport in graph2series" name = {{ airport }}>{{ airport }}</option>
+						<option ng-repeat = "airport in graph2series | orderBy: airport | filter: filterAirportSelector" name = {{ airport }}>{{ airport }}</option>
 					</select>
 					<br>
 					<label for "airportInputDate">Date:</label>
@@ -58,10 +74,23 @@
 			chart-labels = "graphDisplayLabels" chart-series = "graph1DisplaySeries"
 			chart-options = "graph1options"></canvas>
 			<fieldset>
+				<legend>Stats</legend>
+				<ul>
+					<li class = "title">Last Claim Entered:</li>
+					<li>{{ lastClaimEnteredG1 }}</li>
+					<li class = "title">Total Number of Airlines:</li>
+					<li>{{ totalAirlines }}</li>
+					<li class = "title">Total Value Loss:</li>
+					<li>${{ totalValueLost }}</li>
+				</ul>
+			</fieldset>
+			<fieldset>
 			<legend>Filter</legend>
-					<label class = "selectLabels" for = "filterAirlineSelector">By Airline</label>
+					<label for = "filterAirline">Search:</label>
+					<input type = "text" ng-model = "filterAirline" name = "filterAirline">
+					<br><br>
 					<select id = "filterAirlineSelector" multiple ng-model = "myIndex">
-						<option ng-click = "refreshG1()" ng-repeat = "airline in graph1series" value = {{graph1series.indexOf(airline)}} name = {{ airline }} > {{ airline }} </option>
+						<option ng-click = "refreshG1()" ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirline" value = {{graph1series.indexOf(airline)}} name = {{ airline }} > {{ airline }} </option>
 					</select>
 					<br>
 					<hr>
@@ -75,9 +104,12 @@
 			</fieldset>
 			<fieldset>
 				<legend>Add A Claim</legend>
-				<label for = "airlineSelector">Airline</label>
+				<label for = "filterAirlineSelector">Search:</label>
+				<input type = "text" ng-model = "filterAirlineSelector" name = "filterAirlineSelector">
+				<br>
+				<label for = "airlineSelector">Airline:</label>
 				<select id = "airlineSelector" ng-model = "inputAirline">
-					<option ng-repeat = "airline in graph1series" name = {{ airline }}>{{ airline }}</option>
+					<option ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirlineSelector" name = {{ airline }}>{{ airline }}</option>
 				</select>
 				<br>
 				<label for = "airlineInputDate">Date:</label>
