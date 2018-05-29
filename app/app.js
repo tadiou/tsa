@@ -94,6 +94,36 @@ angular.module('app', ['chart.js'])
 						position: 'top'
 				}
 		}
+
+		$scope.graph2options = {
+		    scales: {
+		      yAxes: [
+		        {
+		          id: 'y-axis-1',
+		          type: 'linear',
+		          display: true,
+		          position: 'left',
+							scaleLabel: {
+								display: true,
+								labelString: "Claims Per Month"
+							}
+		        }],
+					xAxes: [
+						{
+							id: 'x-axis-1',
+							scaleLabel: {
+								display: true,
+								labelString: "2010-2013 In Months"
+							}
+
+					}],
+		  	},
+				title: {
+						display: true,
+						text: 'TSA Data 2010-2013 Claims Per Month',
+						position: 'top'
+				}
+		}
 //							Functions & Variables for Web Display
 			$scope.showGraph1Status = true;
 			$scope.showGraph2Status = false;
@@ -380,6 +410,8 @@ angular.module('app', ['chart.js'])
 
 			$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
 
+			$scope.graph2DisplaySeries.push($scope.graph2series[$scope.graph2series.length - 1])
+
 			var tempArray = $scope.graph2data[$scope.graph2data.length -1].slice(beginIndex,endIndex);
 			$scope.graph2DisplayData.push(tempArray);
 
@@ -449,7 +481,7 @@ angular.module('app', ['chart.js'])
 
 			//Recalculate totals
 			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
-					$scope.graph1data[$scope.graph1data.length - 1][index] = month * $scope.graph1data.length
+					$scope.graph1data[$scope.graph1data.length - 1][index] = month * ($scope.graph1data.length - 1)
 			});
 
 			//Add input cost
@@ -457,7 +489,7 @@ angular.module('app', ['chart.js'])
 
 			//Recalculate averages
 			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
-					$scope.graph1data[$scope.graph1data.length - 1][index] = month / $scope.graph1data.length
+					$scope.graph1data[$scope.graph1data.length - 1][index] = month / ($scope.graph1data.length - 1)
 			});
 
 			//Refresh
@@ -484,17 +516,18 @@ angular.module('app', ['chart.js'])
 
 			//Recalculate totals
 			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
-					$scope.graph2data[$scope.graph2data.length - 1][index] = month * $scope.graph2data.length
+					$scope.graph2data[$scope.graph2data.length - 1][index] = month * ($scope.graph2data.length - 1);
 			});
 
 			//Add the new claim
-			$scope.graph2data[$scope.graph2data.length - 1][month] += 1;
+			$scope.graph2data[$scope.graph2data.length - 1][(year % 10 * 12) + month] += 1;
 
 			//Recalculate averages
 			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
-					$scope.graph2data[$scope.graph2data.length - 1][index] = month / $scope.graph2data.length
+					$scope.graph2data[$scope.graph2data.length - 1][index] = month / ($scope.graph2data.length - 1);
 			});
 
+			//Refresh second graph
 			$scope.refreshG2();
 
 		}
