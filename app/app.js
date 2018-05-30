@@ -40,6 +40,7 @@ angular.module('app', ['chart.js'])
 		"Jan11", "Feb11", "Mar11", "Apr11", "May11", "Jun11", "Jul11", "Aug11", "Sep11", "Oct11", "Nov11", "Dec11",
 		"Jan12", "Feb12", "Mar12", "Apr12", "May12", "Jun12", "Jul12", "Aug12", "Sep12", "Oct12", "Nov12", "Dec12",
 		"Jan13", "Feb13", "Mar13", "Apr13", "May13", "Jun13", "Jul13", "Aug13", "Sep13", "Oct13", "Nov13", "Dec13"]
+		$scope.graphcolors = ['#0e5293', '#cf455e', '#ffa500']
 
 		//Set the labels that will display. Initialze as the whole list
 		$scope.graphDisplayLabels = $scope.graphlabels;

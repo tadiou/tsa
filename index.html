@@ -5,15 +5,17 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.js"></script>
 	<!-- Script sourcing d3 -->
 	<script src="https://d3js.org/d3.v5.js"></script>
-	<script src="app/app.js"></script>
-	<!-- <script src="plugins/fusioncharts.js"></script>
-	<script src="plugins/fusioncharts.charts.js"></script> -->
+	<!-- Script sourcing for ChartJS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+	<!-- Script for the angular directive of ChartJS -->
 	<script src="plugins/angular-chart.min.js"></script>
+	<!-- Script for my angular app -->
+	<script src="app/app.js"></script>
 	<!--CSS Styling-->
 	<link rel="stylesheet" href = "tsaproj.css">
 </head>
 <body ng-controller="ctrl">
+	<!-- Toggle buttons for the two graphs -->
 	<div id = "toggleButtons">
 		<button type = "button" ng-click = "showGraph2()">Average Claims Per Month</button>
 		<button type = "button" ng-click = "showGraph1()">Value Loss Per Month</button>
@@ -22,105 +24,91 @@
 	<div id = "graph2" class = "graphs" ng-show = "showGraph2Status">
 			<canvas id = "bar" class = "chart chart-bar" chart-data = "graph2DisplayData"
 			chart-labels = "graphDisplayLabels" chart-series = "graph2DisplaySeries"
-			chart-options = "graph2options"></canvas>
-			<fieldset>
-					<legend>Stats</legend>
-					<ul>
-						<li class = "title">Last Claim Entered:</li>
-						<li>{{ lastClaimEntered }}</li>
-						<li class = "title">Total Number of Airports:</li>
-						<li>{{ totalAirports }}</li>
-						<li class = "title">Total Claims:</li>
-						<li>{{ totalClaims }}</li>
-					</ul>
-			</fieldset>
-			<fieldset>
-					<legend>Filter</legend>
-					<label for = "filterAirport">Search:</label>
-					<input type = "text" ng-model = "filterAirport" name = "filterAirport">
-					<br><br>
-					<select id = "filterAirportSelector" multiple ng-model = "myIndex2">
-						<option ng-click = "refreshG2()" ng-repeat = "airport in graph2series | orderBy: airport | filter : filterAirport" value = {{graph2series.indexOf(airport)}} name = {{ airport }} > {{ airport }} </option>
-					</select>
-					<hr>
-					Time Window
-					<br><br>
-					<label for "FromMonth">From:</label>
-					<input id = "FromMonth" name = "FromMonth" type = "month" ng-mouseleave = "refreshG2()" ng-model = "FromMonth" min = "2010-01" max = "2013-12">
-					<br>
-					<label for "ToMonth">To:</label>
-					<input id = "ToMonth" name = "ToMonth" type = "month" ng-mouseleave = "refreshG2()" ng-model = "ToMonth" min = "2010-01" max = "2013-12">
-			</fieldset>
-			<fieldset>
-					<legend>Add A Claim</legend>
-					<label for = "filterAirportSelector">Search:</label>
-					<input type = "text" ng-model = "filterAirportSelector" name = "filterAirportSelector">
-					<br>
-					<label for = "airportSelector">Airport</label>
-					<select id = "airportSelector" ng-model = "inputAirport">
-						<option ng-repeat = "airport in graph2series | orderBy: airport | filter: filterAirportSelector" name = {{ airport }}>{{ airport }}</option>
-					</select>
-					<br>
-					<label for "airportInputDate">Date:</label>
-					<input id = "airportInputDate" ng-model = "airportInputDate" name = "airportInputDate" type = "month" min = "2010-01" max = "2013-12">
-					<br>
-					<button class = "formSubmit" type = "button" ng-click = "addG2()">Submit</button>
-			</fieldset>
+			chart-options = "graph2options" chart-colors = "graphcolors"></canvas>
+			<div class = "console">
+				<fieldset class = "firstSet">
+						<legend>S T A T S</legend>
+						<ul>
+							<li class = "title">Last Claim Entered</li>
+							<li>{{ lastClaimEntered }}</li>
+							<li class = "title">Total Number of Airports</li>
+							<li>{{ totalAirports }}</li>
+							<li class = "title">Total Claims</li>
+							<li>{{ totalClaims }}</li>
+						</ul>
+				</fieldset>
+				<fieldset class = "secondSet">
+						<legend>F I L T E R</legend>
+						<label for = "filterAirport">Search:</label>
+						<input type = "text" ng-model = "filterAirport" name = "filterAirport">
+						<select id = "filterAirportSelector" multiple ng-model = "myIndex2">
+							<option ng-click = "refreshG2()" ng-repeat = "airport in graph2series | orderBy: airport | filter : filterAirport" value = {{graph2series.indexOf(airport)}} name = {{ airport }} > {{ airport }} </option>
+						</select>
+						<hr>
+						<label for "FromMonth">From:</label>
+						<input id = "FromMonth" name = "FromMonth" type = "month" ng-mouseleave = "refreshG2()" ng-model = "FromMonth" min = "2010-01" max = "2013-12">
+						<label for "ToMonth">To:</label>
+						<input id = "ToMonth" name = "ToMonth" type = "month" ng-mouseleave = "refreshG2()" ng-model = "ToMonth" min = "2010-01" max = "2013-12">
+				</fieldset>
+				<fieldset class = "thirdSet">
+						<legend>NEW C L A I M</legend>
+						<label for = "filterAirportSelector">Search:</label>
+						<input type = "text" ng-model = "filterAirportSelector" name = "filterAirportSelector">
+						<label for = "airportSelector">Airport</label>
+						<select id = "airportSelector" ng-model = "inputAirport">
+							<option ng-repeat = "airport in graph2series | orderBy: airport | filter: filterAirportSelector" name = {{ airport }}>{{ airport }}</option>
+						</select>
+						<label for "airportInputDate">Date:</label>
+						<input id = "airportInputDate" ng-model = "airportInputDate" name = "airportInputDate" type = "month" min = "2010-01" max = "2013-12">
+						<button class = "formSubmit" type = "button" ng-click = "addG2()">Submit</button>
+				</fieldset>
+			</div>
 	</div>
-	<br>
 	<!-- GRAPH 1 -->
 	<div id = "graph1" class = "graphs" ng-show = "showGraph1Status">
 			<canvas id = "line" class = "chart chart-line" chart-data = "graph1DisplayData"
 			chart-labels = "graphDisplayLabels" chart-series = "graph1DisplaySeries"
-			chart-options = "graph1options"></canvas>
-			<fieldset>
-				<legend>Stats</legend>
-				<ul>
-					<li class = "title">Last Claim Entered:</li>
-					<li>{{ lastClaimEnteredG1 }}</li>
-					<li class = "title">Total Number of Airlines:</li>
-					<li>{{ totalAirlines }}</li>
-					<li class = "title">Total Value Loss:</li>
-					<li>${{ totalValueLost }}</li>
-				</ul>
-			</fieldset>
-			<fieldset>
-			<legend>Filter</legend>
-					<label for = "filterAirline">Search:</label>
-					<input type = "text" ng-model = "filterAirline" name = "filterAirline">
-					<br><br>
-					<select id = "filterAirlineSelector" multiple ng-model = "myIndex">
-						<option ng-click = "refreshG1()" ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirline" value = {{graph1series.indexOf(airline)}} name = {{ airline }} > {{ airline }} </option>
+			chart-options = "graph1options" chart-colors = "graphcolors"></canvas>
+			<div class = "console">
+			<fieldset class = "firstSet">
+					<legend>S T A T S</legend>
+					<ul>
+						<li class = "title">Last Claim Entered</li>
+						<li>{{ lastClaimEnteredG1 }}</li>
+						<li class = "title">Total Number of Airlines</li>
+						<li>{{ totalAirlines }}</li>
+						<li class = "title">Total Value Loss</li>
+						<li>${{ totalValueLost }}</li>
+					</ul>
+				</fieldset>
+				<fieldset class = "secondSet">
+				<legend>F I L T E R</legend>
+						<label for = "filterAirline">Search:</label>
+						<input type = "text" ng-model = "filterAirline" name = "filterAirline">
+						<select id = "filterAirlineSelector" multiple ng-model = "myIndex">
+							<option ng-click = "refreshG1()" ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirline" value = {{graph1series.indexOf(airline)}} name = {{ airline }} > {{ airline }} </option>
+						</select>
+						<hr>
+						<label for "FromMonth">From:</label>
+						<input id = "FromMonth" name = "FromMonth" type = "month" ng-mouseleave = "refreshG1()" ng-model = "FromMonth" min = "2010-01" max = "2013-12">
+						<label for "airlineToMonth">To:</label>
+						<input id = "airlineToMonth" name = "airlineToMonth" type = "month" ng-mouseleave = "refreshG1()" ng-model = "ToMonth" min = "2010-01" max = "2013-12">
+				</fieldset>
+				<fieldset class = "thirdSet">
+					<legend>NEW C L A I M</legend>
+					<label for = "filterAirlineSelector">Search:</label>
+					<input type = "text" ng-model = "filterAirlineSelector" name = "filterAirlineSelector">
+					<label for = "airlineSelector">Airline:</label>
+					<select id = "airlineSelector" ng-model = "inputAirline">
+						<option ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirlineSelector" name = {{ airline }}>{{ airline }}</option>
 					</select>
-					<br>
-					<hr>
-					Time Window
-					<br><br>
-					<label for "FromMonth">From:</label>
-					<input id = "FromMonth" name = "FromMonth" type = "month" ng-mouseleave = "refreshG1()" ng-model = "FromMonth" min = "2010-01" max = "2013-12">
-					<br>
-					<label for "airlineToMonth">To:</label>
-					<input id = "airlineToMonth" name = "airlineToMonth" type = "month" ng-mouseleave = "refreshG1()" ng-model = "ToMonth" min = "2010-01" max = "2013-12">
-			</fieldset>
-			<fieldset>
-				<legend>Add A Claim</legend>
-				<label for = "filterAirlineSelector">Search:</label>
-				<input type = "text" ng-model = "filterAirlineSelector" name = "filterAirlineSelector">
-				<br>
-				<label for = "airlineSelector">Airline:</label>
-				<select id = "airlineSelector" ng-model = "inputAirline">
-					<option ng-repeat = "airline in graph1series | orderBy: airline | filter: filterAirlineSelector" name = {{ airline }}>{{ airline }}</option>
-				</select>
-				<br>
-				<label for = "airlineInputDate">Date:</label>
-				<input id = "airlineInputDate" ng-model = "airlineInputDate" name = "airlineInputDate" type = "month" min = "2010-01" max = "2013-12">
-				<br>
-				<label for = "cost">Cost ($)</label>
-				<input id = "cost" name = "cost" ng-model = "inputCost" type = "number">
-				<br>
-				<button class = "formSubmit" type = "button" ng-click = "addG1()">Submit</button>
-			</fieldset>
-
+					<label for = "airlineInputDate">Date:</label>
+					<input id = "airlineInputDate" ng-model = "airlineInputDate" name = "airlineInputDate" type = "month" min = "2010-01" max = "2013-12">
+					<label for = "cost">Cost ($):</label>
+					<input id = "cost" name = "cost" ng-model = "inputCost" type = "number">
+					<button class = "formSubmit" type = "button" ng-click = "addG1()">SUBMIT</button>
+				</fieldset>
+		</div>
 	</div>
 
 
