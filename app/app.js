@@ -531,7 +531,7 @@ angular.module('app', ['chart.js'])
 			});
 
 			//Add input cost
-			$scope.graph1data[$scope.graph1data.length - 1][month] += $scope.inputCost
+			$scope.graph1data[$scope.graph1data.length - 1][(year % 10 * 12) + month] += $scope.inputCost
 
 			//Recalculate averages
 			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
