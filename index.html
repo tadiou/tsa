@@ -14,13 +14,18 @@
 	<!--CSS Styling-->
 	<link rel="stylesheet" href = "tsaproj.css">
 </head>
+<body>
+
+</body>
+
+</html>
 <body ng-controller="ctrl">
-	<!-- Toggle buttons for the two graphs -->
+	 Toggle buttons for the two graphs
 	<div id = "toggleButtons">
 		<button type = "button" ng-click = "showGraph2()">Average Claims Per Month</button>
 		<button type = "button" ng-click = "showGraph1()">Value Loss Per Month</button>
 	</div>
-	<!--GRAPH 2 -->
+	GRAPH 2
 	<div id = "graph2" class = "graphs" ng-show = "showGraph2Status">
 			<canvas id = "bar" class = "chart chart-bar" chart-data = "graph2DisplayData"
 			chart-labels = "graphDisplayLabels" chart-series = "graph2DisplaySeries"
@@ -64,7 +69,7 @@
 				</fieldset>
 			</div>
 	</div>
-	<!-- GRAPH 1 -->
+	GRAPH 1
 	<div id = "graph1" class = "graphs" ng-show = "showGraph1Status">
 			<canvas id = "line" class = "chart chart-line" chart-data = "graph1DisplayData"
 			chart-labels = "graphDisplayLabels" chart-series = "graph1DisplaySeries"

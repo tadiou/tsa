@@ -1,15 +1,17 @@
+angular.module('valLossPerMonth', []);
+
 angular.module('app', ['chart.js'])
 	.controller('ctrl', ['$scope', function($scope, $filter) {
 		var years = [2010, 2011, 2012, 2013];										//Array for building object
 		var months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];		//Array for building object
 /*******************************************
-		Make an object with this structure
+// 		Make an object with this structure
 		 obj = {
 		 		year: {
 					month: []
 				}
 		 }
-********************************************/
+// ********************************************/
 		var yearMonthStructure = function() {
 			var structure = {}
 			years.forEach(function(year) {
@@ -20,7 +22,7 @@ angular.module('app', ['chart.js'])
 			});
 			return structure;
 		}
-//Same idea, slight variance with the month as we need to get track of integers
+// //Same idea, slight variance with the month as we need to get track of integers
 		var yearMonthStructureTwo = function() {
 			var structure = {}
 			years.forEach(function(year) {
@@ -30,9 +32,9 @@ angular.module('app', ['chart.js'])
 				})
 			});
 			return structure;
-		}
-
-		//SHARED VARIABLES
+// 		}
+//
+// 		//SHARED VARIABLES
 		$scope.FromMonth = new Date('January 1, 2010 03:24:00'); //Time window from for filtering
 		$scope.ToMonth = new Date('December 1, 2013 03:24:00'); //Time window to for filtering
 		//Labels for both graphs -- same timescale (Value Loss Per Month)
@@ -41,11 +43,11 @@ angular.module('app', ['chart.js'])
 		"Jan12", "Feb12", "Mar12", "Apr12", "May12", "Jun12", "Jul12", "Aug12", "Sep12", "Oct12", "Nov12", "Dec12",
 		"Jan13", "Feb13", "Mar13", "Apr13", "May13", "Jun13", "Jul13", "Aug13", "Sep13", "Oct13", "Nov13", "Dec13"]
 		$scope.graphcolors = ['#0e5293', '#cf455e', '#ffa500']
-
-		//Set the labels that will display. Initialze as the whole list
+//
+// 		//Set the labels that will display. Initialze as the whole list
 		$scope.graphDisplayLabels = $scope.graphlabels;
-
-		//GRAPH 1 Variables
+//
+// 		//GRAPH 1 Variables
 		$scope.rawDataGraph1 = {};								//Scope variable to store raw data gathered from csv for graph1
 		$scope.graph1series = []									//Variable to store series names for first graph (Delta, American Airlines etc.)
 		$scope.graph1DisplaySeries = []  					//To store the series that will be presented in the graph
@@ -60,106 +62,106 @@ angular.module('app', ['chart.js'])
 		$scope.totalValueLost = 0;								//Total value lost
 		$scope.filterAirline;											//Filter scope variable
 		$scope.filterAirlineSelector;							//Filter scope variable (input)
-
-		//GRAPH 2 Variables
-		$scope.rawDataGraph2 = {}; 								//Scope variable to store raw data gathered from csv for graph2
-		$scope.graph2series = [] 									//Variable to store series name for second graph (SEA, BOS etc.)
-		$scope.graph2DisplaySeries = []; 					//Variable to store the series that will be presented in the graph
-		$scope.graph2data = []										//To store the total graph2data
-		$scope.graph2DisplayData = []; 						//Display data graph 2
-		$scope.inputAirport; 											//Airport selection for inputing a new claim
-		$scope.myIndex2 = [] 											//Varialbe to filter through AirportCodes
-		$scope.lastClaimEntered = "N/A";					//To store the last claim entered
-		$scope.totalAirports = 0;									//To store total airports for user
-		$scope.totalClaims = 0;												//To store total claims
-
-		//Sets options for first graph. See ChartJS documentation.
-		$scope.graph1options = {
-		    scales: {
-		      yAxes: [
-		        {
-		          id: 'y-axis-1',
-		          type: 'linear',
-		          display: true,
-		          position: 'left',
-							scaleLabel: {
-								display: true,
-								labelString: "Value Loss Per Month in $"
-							}
-		        }],
-					xAxes: [
-						{
-							id: 'x-axis-1',
-							scaleLabel: {
-								display: true,
-								labelString: "2010-2013 In Months"
-							}
-
-					}],
-		  	},
-				title: {
-						display: true,
-						text: 'TSA Data 2010-2013 Value Loss Per Month',
-						position: 'top'
-				}
-		}
-
-		$scope.graph2options = {
-		    scales: {
-		      yAxes: [
-		        {
-		          id: 'y-axis-1',
-		          type: 'linear',
-		          display: true,
-		          position: 'left',
-							scaleLabel: {
-								display: true,
-								labelString: "Claims Per Month"
-							}
-		        }],
-					xAxes: [
-						{
-							id: 'x-axis-1',
-							scaleLabel: {
-								display: true,
-								labelString: "2010-2013 In Months"
-							}
-
-					}],
-		  	},
-				title: {
-						display: true,
-						text: 'TSA Data 2010-2013 Claims Per Month',
-						position: 'top'
-				}
-		}
-//							Functions & Variables for Web Display
-			$scope.showGraph1Status = true;
-			$scope.showGraph2Status = false;
-
-			$scope.showGraph1 = function() {
-					$scope.showGraph1Status = true;
-					$scope.showGraph2Status = false;
-			}
-
-			$scope.showGraph2 = function() {
-					$scope.showGraph2Status = true;
-					$scope.showGraph1Status = false;
-			}
-/*
-*
-*
-*													FUNCTIONS FOR GRAPH 1 (VALUE LOSS PER MONTH)
-*
-*
-*/
-		//Function to input csv data file
-		function csvData(file) {
+//
+// 		//GRAPH 2 Variables
+// 		$scope.rawDataGraph2 = {}; 								//Scope variable to store raw data gathered from csv for graph2
+// 		$scope.graph2series = [] 									//Variable to store series name for second graph (SEA, BOS etc.)
+// 		$scope.graph2DisplaySeries = []; 					//Variable to store the series that will be presented in the graph
+// 		$scope.graph2data = []										//To store the total graph2data
+// 		$scope.graph2DisplayData = []; 						//Display data graph 2
+// 		$scope.inputAirport; 											//Airport selection for inputing a new claim
+// 		$scope.myIndex2 = [] 											//Varialbe to filter through AirportCodes
+// 		$scope.lastClaimEntered = "N/A";					//To store the last claim entered
+// 		$scope.totalAirports = 0;									//To store total airports for user
+// 		$scope.totalClaims = 0;												//To store total claims
+//
+// 		//Sets options for first graph. See ChartJS documentation.
+// 		$scope.graph1options = {
+// 		    scales: {
+// 		      yAxes: [
+// 		        {
+// 		          id: 'y-axis-1',
+// 		          type: 'linear',
+// 		          display: true,
+// 		          position: 'left',
+// 							scaleLabel: {
+// 								display: true,
+// 								labelString: "Value Loss Per Month in $"
+// 							}
+// 		        }],
+// 					xAxes: [
+// 						{
+// 							id: 'x-axis-1',
+// 							scaleLabel: {
+// 								display: true,
+// 								labelString: "2010-2013 In Months"
+// 							}
+//
+// 					}],
+// 		  	},
+// 				title: {
+// 						display: true,
+// 						text: 'TSA Data 2010-2013 Value Loss Per Month',
+// 						position: 'top'
+// 				}
+// 		}
+//
+// 		$scope.graph2options = {
+// 		    scales: {
+// 		      yAxes: [
+// 		        {
+// 		          id: 'y-axis-1',
+// 		          type: 'linear',
+// 		          display: true,
+// 		          position: 'left',
+// 							scaleLabel: {
+// 								display: true,
+// 								labelString: "Claims Per Month"
+// 							}
+// 		        }],
+// 					xAxes: [
+// 						{
+// 							id: 'x-axis-1',
+// 							scaleLabel: {
+// 								display: true,
+// 								labelString: "2010-2013 In Months"
+// 							}
+//
+// 					}],
+// 		  	},
+// 				title: {
+// 						display: true,
+// 						text: 'TSA Data 2010-2013 Claims Per Month',
+// 						position: 'top'
+// 				}
+// 		}
+// //							Functions & Variables for Web Display
+// 			$scope.showGraph1Status = true;
+// 			$scope.showGraph2Status = false;
+//
+// 			$scope.showGraph1 = function() {
+// 					$scope.showGraph1Status = true;
+// 					$scope.showGraph2Status = false;
+// 			}
+//
+// 			$scope.showGraph2 = function() {
+// 					$scope.showGraph2Status = true;
+// 					$scope.showGraph1Status = false;
+// 			}
+// /*
+// *
+// *
+// *													FUNCTIONS FOR GRAPH 1 (VALUE LOSS PER MONTH)
+// *
+// *
+// */
+// 		//Function to input csv data file
+// 		function csvData(file) {
 		  d3.csv(file, function(data, index) {
 				captureRawDataGraph1(data, index);
 		  }).then(function(data) {
 
-				/************* GRAPH 1 DATA MANIPULATION ************************************/
+// 				/************* GRAPH 1 DATA MANIPULATION ************************************/
 				var numAirlines = 0;														//Keep track of numAirlines to calculate averages
 				var averageArray = new Array(48).fill(0);				//Make an array of length 48 of 0's to hold averages
 
@@ -194,102 +196,146 @@ angular.module('app', ['chart.js'])
 						//Push data array into the graph1data scope variable
 						$scope.graph1data.push(dataArray)
 
-						//Increment numAirlines
-						numAirlines++;
+// 						//Increment numAirlines
+// 						numAirlines++;
+//
+// 					}); //Brackets for airline loop
+//
+// 					//Add the average series name at the *END*
+// 					$scope.graph1series.push("Average All Airlines");
+//
+// 					//Rename claims with no airline
+// 					var index = $scope.graph1series.indexOf('-')
+// 					$scope.graph1series[index] = "No Airline";
+//
+// 					//Calculate averages using numAirlines
+// 					averageArray.forEach(function(month, index) {
+// 						 	averageArray[index] = month / ($scope.graph1series.length - 1);
+// 					})
+//
+// 					//Push the average into graph1data
+// 					$scope.graph1data.push(averageArray);
+//
+//
+// 				/*************************** GRAPH 2 DATA MANIPULATION ***********************/
+//
+// 				averageArray = new Array(48).fill(0);
+// 				var numOfAirports = 0;
+//
+// 				Object.entries($scope.rawDataGraph2).forEach(function(airport, airportIndex) {
+//
+// 					avgIndex = 0;
+// 					numOfAirports++;
+//
+// 					var dataArray = new Array();
+//
+// 					$scope.graph2series.push(airport[0])
+//
+// 					Object.entries(airport[1]).forEach(function(year, yearIndex) {
+// 						Object.entries(year[1]).forEach(function(month, monthIndex) {
+// 								averageArray[avgIndex] += month[1];
+// 								dataArray.push(month[1]);
+// 								avgIndex++;
+// 						}); //Brackets for month loop
+// 					});//Brackets for year loop
+//
+// 					$scope.graph2data.push(dataArray);
+//
+// 				}); //Brackets for airport loop
+//
+// 				averageArray.forEach(function(month, index) {
+// 					averageArray[index] = month / ($scope.graph2series.length - 1)
+// 				});
+//
+// 				//Calculate totals for user
+// 				$scope.totalAirports = $scope.graph2data.length;
+// 				$scope.totalAirlines = $scope.graph1data.length;
+//
+// 				//Start graph with the averages on display
+// 				$scope.graph2series.push("Average");
+// 				$scope.graph2data.push(averageArray);
+//
+// 				$scope.graph1DisplayData.push($scope.graph1data[$scope.graph1data.length - 1]);
+// 				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
+//
+// 				$scope.graph2DisplayData.push($scope.graph2data[$scope.graph2data.length - 1]);
+// 				$scope.graph2DisplaySeries.push($scope.graph2series[$scope.graph2series.length - 1])
+//
+// 				$scope.$apply();
+//
+// 			}); //Brackets for .then function
+// 		}; //Brackets for csv function
+//
+// 		//Convert my number string to an integer
+// 		function convertDollarToInteger(dollar) {
+// 			return Number(dollar.replace(/[^0-9\.-]+/g,""));
+// 		}
+//
+// 		//Capture raw data from csv
+// 		function captureRawDataGraph1(data, index) {
+// 					var d = new Date(data.IncidentDate)		//Convert CSV date into a real date
+// 					var month = d.getMonth();							//Get month
+// 					var year = d.getFullYear();						//Get year
+//
+// 					//If the close amount is a '-', return
+// 					if (data.CloseAmount === '-') return;
+//
+// 					//Convert value to dollar
+// 					value = convertDollarToInteger(data.CloseAmount);
+//
+// 					//If there's no value return
+// 					if (!value) return;
+//
+// 					//Trim spaces off the airline name
+// 					var airlineName = data.AirlineName.trim();
+//
+// 					//Airpot code variable
+// 					var airportCode = data.AirportCode
+//
+//          ****
+            $scope.rawDataGraph[year][month] = {
+              airportCodes: [{}]
+              airlines: [{delta: }]
+            }
 
-					}); //Brackets for airline loop
+            vLPM => keyName for data is = "airlines"
 
-					//Add the average series name at the *END*
-					$scope.graph1series.push("Average All Airlines");
+            function findBy(year, month, type, series) {
+              if (type == 'airline') {
 
-					//Rename claims with no airline
-					var index = $scope.graph1series.indexOf('-')
-					$scope.graph1series[index] = "No Airline";
+              }
+              return $scope.rawDataGraph[year][month][type]
+            }
 
-					//Calculate averages using numAirlines
-					averageArray.forEach(function(month, index) {
-						 	averageArray[index] = month / ($scope.graph1series.length - 1);
-					})
+            rawDataGraph = {
+              2010:
+                0:
+                1:
+            }
+            .rawDataGraph1[airlineName]
+            .rawDataGraph1[year][month][airlineName]
 
-					//Push the average into graph1data
-					$scope.graph1data.push(averageArray);
+            // we're initializing the object once with
+
+            rawDataGraph[year][month]
+            -> find airline and airport
 
 
-				/*************************** GRAPH 2 DATA MANIPULATION ***********************/
+            rawDataGraph[year][month]  = [
+              { airline:  "delta", value: 152, airport: "SFO" },
+              { airline: "delta", value: 345, airport: "BOS" }, 
+              { airline: "JetBlue", value: 152, airport: "SFO" },
+            ]
 
-				averageArray = new Array(48).fill(0);
-				var numOfAirports = 0;
+            // above is data store, below is retreival
 
-				Object.entries($scope.rawDataGraph2).forEach(function(airport, airportIndex) {
+            var yearMonth = rawDataGraph[year][month];
+            var seriesInDatePoint = yearMonth.filter((claims) => claims[seriesType] == name)
+            valueLost = delta.reduceFunction()
+            totalClaims = delta.length
 
-					avgIndex = 0;
-					numOfAirports++;
 
-					var dataArray = new Array();
-
-					$scope.graph2series.push(airport[0])
-
-					Object.entries(airport[1]).forEach(function(year, yearIndex) {
-						Object.entries(year[1]).forEach(function(month, monthIndex) {
-								averageArray[avgIndex] += month[1];
-								dataArray.push(month[1]);
-								avgIndex++;
-						}); //Brackets for month loop
-					});//Brackets for year loop
-
-					$scope.graph2data.push(dataArray);
-
-				}); //Brackets for airport loop
-
-				averageArray.forEach(function(month, index) {
-					averageArray[index] = month / ($scope.graph2series.length - 1)
-				});
-
-				//Calculate totals for user
-				$scope.totalAirports = $scope.graph2data.length;
-				$scope.totalAirlines = $scope.graph1data.length;
-
-				//Start graph with the averages on display
-				$scope.graph2series.push("Average");
-				$scope.graph2data.push(averageArray);
-
-				$scope.graph1DisplayData.push($scope.graph1data[$scope.graph1data.length - 1]);
-				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
-
-				$scope.graph2DisplayData.push($scope.graph2data[$scope.graph2data.length - 1]);
-				$scope.graph2DisplaySeries.push($scope.graph2series[$scope.graph2series.length - 1])
-
-				$scope.$apply();
-
-			}); //Brackets for .then function
-		}; //Brackets for csv function
-
-		//Convert my number string to an integer
-		function convertDollarToInteger(dollar) {
-			return Number(dollar.replace(/[^0-9\.-]+/g,""));
-		}
-
-		//Capture raw data from csv
-		function captureRawDataGraph1(data, index) {
-					var d = new Date(data.IncidentDate)		//Convert CSV date into a real date
-					var month = d.getMonth();							//Get month
-					var year = d.getFullYear();						//Get year
-
-					//If the close amount is a '-', return
-					if (data.CloseAmount === '-') return;
-
-					//Convert value to dollar
-					value = convertDollarToInteger(data.CloseAmount);
-
-					//If there's no value return
-					if (!value) return;
-
-					//Trim spaces off the airline name
-					var airlineName = data.AirlineName.trim();
-
-					//Airpot code variable
-					var airportCode = data.AirportCode
-
+         ***
 					//Raw data variable [airlineName] is either itself or is the result of the yearMonthStructure function
 					$scope.rawDataGraph1[airlineName] = $scope.rawDataGraph1[airlineName] || Object.assign({}, yearMonthStructure());
 
@@ -309,277 +355,277 @@ angular.module('app', ['chart.js'])
 		//Run csvData funciton
 		csvData("data/claims.csv");
 
-		//Generic function for adding data from the form
-		//Having a similar issue to the refresh. Will work on first round, but once the
-		//time window changes it doesn't work anymore.
-		// function add(data, series, date, inputIndicator, inputAmount) {
-		// 	//Turn date string into a usable date
-		// 	date = new Date(date)
-		//
-		// 	//Get month & year
-		// 	var month = date.getMonth();
-		// 	var year = date.getFullYear();
-		//
-		// 	//Get index
-		// 	var index = series.indexOf(inputIndicator)
-		//
-		// 	//Add to data
-		// 	data[index][(year % 10 * 12) + month] += inputAmount
-		//
-		// }
+		Generic function for adding data from the form
+		Having a similar issue to the refresh. Will work on first round, but once the
+		time window changes it doesn't work anymore.
+		function add(data, series, date, inputIndicator, inputAmount) {
+			//Turn date string into a usable date
+			date = new Date(date)
 
-		// //Graph 1 add function
-		// $scope.addG1 = function () {
-		// 	add($scope.graph1data, $scope.graph1series, $scope.airlineInputDate, $scope.inputAirline, $scope.inputCost);
-		// 	$scope.refreshG1();
-		// };
-		//
-		// //Graph 2 add function
-		// $scope.addG2 = function() {
-		// 	add($scope.graph2data, $scope.graph2series, $scope.airportInputDate, $scope.inputAirport, 1);
-		// 	$scope.refreshG2();
-		// }
-
-		// $scope.refreshG1 = function() {
-		// 	refresh($scope.graph1data, $scope.graph1series, $scope.graph1DisplaySeries, $scope.graph1DisplayData, $scope.myIndex);
-		// 	console.log($scope.graph1DisplaySeries);
-		// 	console.log($scope.graph1DisplayData);
-		// };
-		//
-		// $scope.refreshG2 = function() {
-		// 	refresh($scope.graph2data, $scope.graph2series, $scope.graph2DisplaySeries, $scope.graph2DisplayData, $scope.myIndex2);
-		// 		console.log($scope.graph2DisplaySeries);
-		// 		console.log($scope.graph2DisplayData);
-		// };
-		/* Try again at the end. It appears that displaySeries/displayData are beggining
-		passed by value and therefore are not changing the appropriate scope variables.
-		A cursory search on the internet is not helping, but will return to this */
-		// function refresh(data, series, displaySeries, displayData, index) {
-		//
-		// 		//Reset the display series and data
-		// 		displaySeries = [];
-		// 		displayData = []
-		//
-		// 		//Get the from date from a string to a date
-		// 		$scope.FromMonth = new Date($scope.FromMonth);
-		//
-		// 		//Get the beggining of the time window
-		// 		var monthBegin = $scope.FromMonth.getMonth();
-		// 		var yearBegin = $scope.FromMonth.getFullYear();
-		//
-		// 		//Get the to date from a string to a date
-		// 		$scope.ToMonth = new Date($scope.ToMonth)
-		//
-		// 		//Get the end of the time window
-		// 		var monthEnd = $scope.ToMonth.getMonth();
-		// 		var yearEnd = $scope.ToMonth.getFullYear();
-		//
-		// 		//Convert years to months
-		// 		yearBegin = yearBegin % 10 * 12;
-		// 		yearEnd = yearEnd % 10 * 12;
-		//
-		// 		//Create indexes
-		// 		var beginIndex = monthBegin + yearBegin;
-		// 		var endIndex = monthEnd + yearEnd + 1;
-		//
-		// 		//Turn display labels into appropriate window
-		// 		$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
-		//
-		// 		//Make sure average is always in chart
-		// 		displaySeries.push(series[series.length - 1]);
-		// 		var tempArray = data[data.length -1].slice(beginIndex,endIndex);
-		// 		displayData.push(tempArray);
-		//
-		// 		//Get the appropriate slices of info according to the time window
-		// 		for (i = 0; i < index.length; i++)
-		// 		{
-		// 				tempArray = data[parseInt(index[i])].slice(beginIndex, endIndex)
-		// 				displaySeries.push(series[parseInt(index[i])]);
-		// 				displayData.push(tempArray);
-		// 		}
-		//
-		// 		displaySeries = displaySeries;
-		// 		displayData = displayData;
-		// 		console.log(displaySeries);
-		// 		console.log(displayData);
-		//
-		// };
-		$scope.refreshG2 = function() {
-
-			//Reset series
-			$scope.graph2DisplaySeries = [];
-			$scope.graph2DisplayData = [];
-
-			//Turn date string into usable date
-			$scope.FromMonth = new Date($scope.FromMonth)
-
-			//From month and from yera
-			var monthBegin = $scope.FromMonth.getMonth();
-			var yearBegin = $scope.FromMonth.getFullYear();
-
-			//Repeat with to month
-			$scope.ToMonth = new Date($scope.ToMonth)
-
-			var monthEnd = $scope.ToMonth.getMonth();
-			var yearEnd = $scope.ToMonth.getFullYear();
-
-			//Calculate months for year begin and year end
-			yearBegin = yearBegin % 10 * 12;
-			yearEnd = yearEnd % 10 * 12;
-
-			//Calculate indecies
-			var beginIndex = monthBegin + yearBegin;
-			var endIndex = monthEnd + yearEnd + 1;
-
-			//Get the proper range of labels
-			$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
-
-			//Push the average in
-			$scope.graph2DisplaySeries.push($scope.graph2series[$scope.graph2series.length - 1])
-
-			//Add the average data to the temp array for display
-			var tempArray = $scope.graph2data[$scope.graph2data.length -1].slice(beginIndex,endIndex);
-			$scope.graph2DisplayData.push(tempArray);
-
-			//Initialize total
-			var total = 0;
-
-			for (i = 0; i < $scope.myIndex2.length; i++)
-			{
-					//Use the index from the form to access the correct data
-					tempArray = $scope.graph2data[parseInt($scope.myIndex2[i])].slice(beginIndex, endIndex);
-					//Repeat with series
-					$scope.graph2DisplaySeries.push($scope.graph2series[parseInt($scope.myIndex2[i])]);
-					//Push the array into display data
-					$scope.graph2DisplayData.push(tempArray);
-
-					//Add the sum of the selected airport claims
-					total += $scope.graph2data[parseInt($scope.myIndex2[i])].slice(beginIndex, endIndex).reduce((total, amount) => total + amount);
-			}
-
-			//Set the scope variable to the total;
-			$scope.totalClaims = total;
-
-
-
-		};
-		// //Filter function
-		$scope.refreshG1 = function (){
-
-				$scope.graph1DisplaySeries = [];
-				$scope.graph1DisplayData = [];
-
-				$scope.FromMonth = new Date($scope.FromMonth)
-
-				var monthBegin = $scope.FromMonth.getMonth();
-				var yearBegin = $scope.FromMonth.getFullYear();
-
-				$scope.ToMonth = new Date($scope.ToMonth)
-
-				var monthEnd = $scope.ToMonth.getMonth();
-				var yearEnd = $scope.ToMonth.getFullYear();
-
-				yearBegin = yearBegin % 10 * 12;
-				yearEnd = yearEnd % 10 * 12;
-
-				var beginIndex = monthBegin + yearBegin;
-				var endIndex = monthEnd + yearEnd + 1;
-
-				$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
-
-				//Make sure average vl/m is included in every chart
-				var tempArray = $scope.graph1data[$scope.graph1data.length -1].slice(beginIndex,endIndex);
-				$scope.graph1DisplayData.push(tempArray);
-
-				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
-
-				var total = 0;
-				//Iterate over number of entries in my index. Give correct data to display
-					for (i = 0; i < $scope.myIndex.length; i++)
-					{
-							tempArray = $scope.graph1data[parseInt($scope.myIndex[i])].slice(beginIndex, endIndex)
-							$scope.graph1DisplaySeries.push($scope.graph1series[parseInt($scope.myIndex[i])]);
-							$scope.graph1DisplayData.push(tempArray);
-
-							//Add the sum of the selected airport claims
-							total += $scope.graph1data[parseInt($scope.myIndex[i])].slice(beginIndex, endIndex).reduce((total, amount) => total + amount);
-					}
-
-				$scope.totalValueLost = total.toFixed(2);
-		};
-
-		$scope.addG1 = function() {
-
-			//Turn string into usable date
-			$scope.airlineInputDate = new Date($scope.airlineInputDate);
-
-			//Get month
-			var month = $scope.airlineInputDate.getMonth();
-
-			//Get year
-			var year = $scope.airlineInputDate.getFullYear();
+			//Get month & year
+			var month = date.getMonth();
+			var year = date.getFullYear();
 
 			//Get index
-			var index = $scope.graph1series.indexOf($scope.inputAirline);
+			var index = series.indexOf(inputIndicator)
 
 			//Add to data
-			$scope.graph1data[index][(year % 10 * 12) + month] += $scope.inputCost;
-
-			//Recalculate totals
-			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
-					$scope.graph1data[$scope.graph1data.length - 1][index] = month * ($scope.graph1data.length - 1)
-			});
-
-			//Add input cost
-			$scope.graph1data[$scope.graph1data.length - 1][(year % 10 * 12) + month] += $scope.inputCost
-
-			//Recalculate averages
-			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
-					$scope.graph1data[$scope.graph1data.length - 1][index] = month / ($scope.graph1data.length - 1)
-			});
-
-			month = month + 1
-			//Update last claimed for G1
-			$scope.lastClaimEnteredG1 = $scope.inputAirline + " | " + month + "/" + year + " | $" + $scope.inputCost;
-			//Refresh
-			$scope.refreshG1();
+			data[index][(year % 10 * 12) + month] += inputAmount
 
 		}
 
-		$scope.addG2 = function() {
-
-			//Turn string into usable date
-			$scope.airportInputDate = new Date($scope.airportInputDate);
-
-			//Get month
-			var month = $scope.airportInputDate.getMonth();
-
-			//Get year
-			var year = $scope.airportInputDate.getFullYear();
-
-			//Get index
-			var index = $scope.graph2series.indexOf($scope.inputAirport)
-
-			$scope.lastClaimEntered = $scope.inputAirport + " " + (month + 1) + "/" + year;
-			//Add to data
-			$scope.graph2data[index][(year % 10 * 12) + month] += 1;
-
-			//Recalculate totals
-			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
-					$scope.graph2data[$scope.graph2data.length - 1][index] = month * ($scope.graph2data.length - 1);
-			});
-
-			//Add the new claim
-			$scope.graph2data[$scope.graph2data.length - 1][(year % 10 * 12) + month] += 1;
-
-			//Recalculate averages
-			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
-					$scope.graph2data[$scope.graph2data.length - 1][index] = month / ($scope.graph2data.length - 1);
-			});
-
-
-			//Refresh second graph
-			$scope.refreshG2();
-
-		}
-	}])
+		//Graph 1 add function
+		$scope.addG1 = function () {
+			add($scope.graph1data, $scope.graph1series, $scope.airlineInputDate, $scope.inputAirline, $scope.inputCost);
+// 		// 	$scope.refreshG1();
+// 		// };
+// 		//
+// 		// //Graph 2 add function
+// 		// $scope.addG2 = function() {
+// 		// 	add($scope.graph2data, $scope.graph2series, $scope.airportInputDate, $scope.inputAirport, 1);
+// 		// 	$scope.refreshG2();
+// 		// }
+//
+// 		// $scope.refreshG1 = function() {
+// 		// 	refresh($scope.graph1data, $scope.graph1series, $scope.graph1DisplaySeries, $scope.graph1DisplayData, $scope.myIndex);
+// 		// 	console.log($scope.graph1DisplaySeries);
+// 		// 	console.log($scope.graph1DisplayData);
+// 		// };
+// 		//
+// 		// $scope.refreshG2 = function() {
+// 		// 	refresh($scope.graph2data, $scope.graph2series, $scope.graph2DisplaySeries, $scope.graph2DisplayData, $scope.myIndex2);
+// 		// 		console.log($scope.graph2DisplaySeries);
+// 		// 		console.log($scope.graph2DisplayData);
+// 		// };
+// 		/* Try again at the end. It appears that displaySeries/displayData are beggining
+// 		passed by value and therefore are not changing the appropriate scope variables.
+// 		A cursory search on the internet is not helping, but will return to this */
+// 		// function refresh(data, series, displaySeries, displayData, index) {
+// 		//
+// 		// 		//Reset the display series and data
+// 		// 		displaySeries = [];
+// 		// 		displayData = []
+// 		//
+// 		// 		//Get the from date from a string to a date
+// 		// 		$scope.FromMonth = new Date($scope.FromMonth);
+// 		//
+// 		// 		//Get the beggining of the time window
+// 		// 		var monthBegin = $scope.FromMonth.getMonth();
+// 		// 		var yearBegin = $scope.FromMonth.getFullYear();
+// 		//
+// 		// 		//Get the to date from a string to a date
+// 		// 		$scope.ToMonth = new Date($scope.ToMonth)
+// 		//
+// 		// 		//Get the end of the time window
+// 		// 		var monthEnd = $scope.ToMonth.getMonth();
+// 		// 		var yearEnd = $scope.ToMonth.getFullYear();
+// 		//
+// 		// 		//Convert years to months
+// 		// 		yearBegin = yearBegin % 10 * 12;
+// 		// 		yearEnd = yearEnd % 10 * 12;
+// 		//
+// 		// 		//Create indexes
+// 		// 		var beginIndex = monthBegin + yearBegin;
+// 		// 		var endIndex = monthEnd + yearEnd + 1;
+// 		//
+// 		// 		//Turn display labels into appropriate window
+// 		// 		$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
+// 		//
+// 		// 		//Make sure average is always in chart
+// 		// 		displaySeries.push(series[series.length - 1]);
+// 		// 		var tempArray = data[data.length -1].slice(beginIndex,endIndex);
+// 		// 		displayData.push(tempArray);
+// 		//
+// 		// 		//Get the appropriate slices of info according to the time window
+// 		// 		for (i = 0; i < index.length; i++)
+// 		// 		{
+// 		// 				tempArray = data[parseInt(index[i])].slice(beginIndex, endIndex)
+// 		// 				displaySeries.push(series[parseInt(index[i])]);
+// 		// 				displayData.push(tempArray);
+// 		// 		}
+// 		//
+// 		// 		displaySeries = displaySeries;
+// 		// 		displayData = displayData;
+// 		// 		console.log(displaySeries);
+// 		// 		console.log(displayData);
+// 		//
+// 		// };
+// 		$scope.refreshG2 = function() {
+//
+// 			//Reset series
+// 			$scope.graph2DisplaySeries = [];
+// 			$scope.graph2DisplayData = [];
+//
+// 			//Turn date string into usable date
+// 			$scope.FromMonth = new Date($scope.FromMonth)
+//
+// 			//From month and from yera
+// 			var monthBegin = $scope.FromMonth.getMonth();
+// 			var yearBegin = $scope.FromMonth.getFullYear();
+//
+// 			//Repeat with to month
+// 			$scope.ToMonth = new Date($scope.ToMonth)
+//
+// 			var monthEnd = $scope.ToMonth.getMonth();
+// 			var yearEnd = $scope.ToMonth.getFullYear();
+//
+// 			//Calculate months for year begin and year end
+// 			yearBegin = yearBegin % 10 * 12;
+// 			yearEnd = yearEnd % 10 * 12;
+//
+// 			//Calculate indecies
+// 			var beginIndex = monthBegin + yearBegin;
+// 			var endIndex = monthEnd + yearEnd + 1;
+//
+// 			//Get the proper range of labels
+// 			$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
+//
+// 			//Push the average in
+// 			$scope.graph2DisplaySeries.push($scope.graph2series[$scope.graph2series.length - 1])
+//
+// 			//Add the average data to the temp array for display
+// 			var tempArray = $scope.graph2data[$scope.graph2data.length -1].slice(beginIndex,endIndex);
+// 			$scope.graph2DisplayData.push(tempArray);
+//
+// 			//Initialize total
+// 			var total = 0;
+//
+// 			for (i = 0; i < $scope.myIndex2.length; i++)
+// 			{
+// 					//Use the index from the form to access the correct data
+// 					tempArray = $scope.graph2data[parseInt($scope.myIndex2[i])].slice(beginIndex, endIndex);
+// 					//Repeat with series
+// 					$scope.graph2DisplaySeries.push($scope.graph2series[parseInt($scope.myIndex2[i])]);
+// 					//Push the array into display data
+// 					$scope.graph2DisplayData.push(tempArray);
+//
+// 					//Add the sum of the selected airport claims
+// 					total += $scope.graph2data[parseInt($scope.myIndex2[i])].slice(beginIndex, endIndex).reduce((total, amount) => total + amount);
+// 			}
+//
+// 			//Set the scope variable to the total;
+// 			$scope.totalClaims = total;
+//
+//
+//
+// 		};
+// 		// //Filter function
+// 		$scope.refreshG1 = function (){
+//
+// 				$scope.graph1DisplaySeries = [];
+// 				$scope.graph1DisplayData = [];
+//
+// 				$scope.FromMonth = new Date($scope.FromMonth)
+//
+// 				var monthBegin = $scope.FromMonth.getMonth();
+// 				var yearBegin = $scope.FromMonth.getFullYear();
+//
+// 				$scope.ToMonth = new Date($scope.ToMonth)
+//
+// 				var monthEnd = $scope.ToMonth.getMonth();
+// 				var yearEnd = $scope.ToMonth.getFullYear();
+//
+// 				yearBegin = yearBegin % 10 * 12;
+// 				yearEnd = yearEnd % 10 * 12;
+//
+// 				var beginIndex = monthBegin + yearBegin;
+// 				var endIndex = monthEnd + yearEnd + 1;
+//
+// 				$scope.graphDisplayLabels = $scope.graphlabels.slice(beginIndex,endIndex)
+//
+// 				//Make sure average vl/m is included in every chart
+// 				var tempArray = $scope.graph1data[$scope.graph1data.length -1].slice(beginIndex,endIndex);
+// 				$scope.graph1DisplayData.push(tempArray);
+//
+// 				$scope.graph1DisplaySeries.push($scope.graph1series[$scope.graph1series.length - 1])
+//
+// 				var total = 0;
+// 				//Iterate over number of entries in my index. Give correct data to display
+// 					for (i = 0; i < $scope.myIndex.length; i++)
+// 					{
+// 							tempArray = $scope.graph1data[parseInt($scope.myIndex[i])].slice(beginIndex, endIndex)
+// 							$scope.graph1DisplaySeries.push($scope.graph1series[parseInt($scope.myIndex[i])]);
+// 							$scope.graph1DisplayData.push(tempArray);
+//
+// 							//Add the sum of the selected airport claims
+// 							total += $scope.graph1data[parseInt($scope.myIndex[i])].slice(beginIndex, endIndex).reduce((total, amount) => total + amount);
+// 					}
+//
+// 				$scope.totalValueLost = total.toFixed(2);
+// 		};
+//
+// 		$scope.addG1 = function() {
+//
+// 			//Turn string into usable date
+// 			$scope.airlineInputDate = new Date($scope.airlineInputDate);
+//
+// 			//Get month
+// 			var month = $scope.airlineInputDate.getMonth();
+//
+// 			//Get year
+// 			var year = $scope.airlineInputDate.getFullYear();
+//
+// 			//Get index
+// 			var index = $scope.graph1series.indexOf($scope.inputAirline);
+//
+// 			//Add to data
+// 			$scope.graph1data[index][(year % 10 * 12) + month] += $scope.inputCost;
+//
+// 			//Recalculate totals
+// 			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
+// 					$scope.graph1data[$scope.graph1data.length - 1][index] = month * ($scope.graph1data.length - 1)
+// 			});
+//
+// 			//Add input cost
+// 			$scope.graph1data[$scope.graph1data.length - 1][(year % 10 * 12) + month] += $scope.inputCost
+//
+// 			//Recalculate averages
+// 			$scope.graph1data[$scope.graph1data.length - 1].forEach(function(month, index) {
+// 					$scope.graph1data[$scope.graph1data.length - 1][index] = month / ($scope.graph1data.length - 1)
+// 			});
+//
+// 			month = month + 1
+// 			//Update last claimed for G1
+// 			$scope.lastClaimEnteredG1 = $scope.inputAirline + " | " + month + "/" + year + " | $" + $scope.inputCost;
+// 			//Refresh
+// 			$scope.refreshG1();
+//
+// 		}
+//
+// 		$scope.addG2 = function() {
+//
+// 			//Turn string into usable date
+// 			$scope.airportInputDate = new Date($scope.airportInputDate);
+//
+// 			//Get month
+// 			var month = $scope.airportInputDate.getMonth();
+//
+// 			//Get year
+// 			var year = $scope.airportInputDate.getFullYear();
+//
+// 			//Get index
+// 			var index = $scope.graph2series.indexOf($scope.inputAirport)
+//
+// 			$scope.lastClaimEntered = $scope.inputAirport + " " + (month + 1) + "/" + year;
+// 			//Add to data
+// 			$scope.graph2data[index][(year % 10 * 12) + month] += 1;
+//
+// 			//Recalculate totals
+// 			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
+// 					$scope.graph2data[$scope.graph2data.length - 1][index] = month * ($scope.graph2data.length - 1);
+// 			});
+//
+// 			//Add the new claim
+// 			$scope.graph2data[$scope.graph2data.length - 1][(year % 10 * 12) + month] += 1;
+//
+// 			//Recalculate averages
+// 			$scope.graph2data[$scope.graph2data.length - 1].forEach(function(month, index) {
+// 					$scope.graph2data[$scope.graph2data.length - 1][index] = month / ($scope.graph2data.length - 1);
+// 			});
+//
+//
+// 			//Refresh second graph
+// 			$scope.refreshG2();
+//
+// 		}
+// 	}])
