@@ -1,0 +1,112 @@
+$routeConfig: [
+  {
+    path: "airline",
+    component: "valueLossPerMonth"
+  },
+  {
+    path: "airport",
+    component: "claimLossPerMonth"
+  }
+]
+
+yourwebsite.com/airline
+yourwebsite.com/airport
+
+$root -> = airline
+
+$routeParams -> {
+  monthStart: string,
+  monthEnd: string,
+  airline: array
+}
+
+yourwebsite.com/airline?monthStart=03-20-2009
+
+$routeParams["monthStart"] -> "03-20-2009" moment.js -> actual date
+
+click on submit  -> submit will link you to the same page with updated params
+
+`onchange` to do the time update.
+
+code.angularjs.org/1.5.11/docs/api/ng/directive/ngChange
+
+<input id="monthStart">
+
+ng-change ->
+
+duplicate code is an issue
+
+-----
+
+graph : {
+  startMonth:
+  endMonth:
+  whichPoints:
+  yValues:
+  xAxisPoints:
+  yAxisPoints:
+  colors:
+}
+
+angular.component("graph", [$startMonth, $endMonth], fucntion() {
+
+})
+
+var obj1 = {
+  //method1: function() {
+  //  return "foo"
+  //},
+  method2: function() {
+    return "bar";
+  }
+}
+
+var obj2 = {
+  //mehtod33: function() {
+  //  return "foo"
+  //}
+}
+
+objectToInjectInto = function(injectable) {
+  return {
+    method1: function() {
+      return "foo"
+    }.merge(injectable)
+  }
+}
+
+newObj = objectToInjectInto(obj1)
+
+newObj.mehtod1 => foo
+newObj.method2 => bar
+
+newObj2 = objectToInjectInto(obj2)
+
+newObj2.method1 => foo
+newObj2.mehtod2 => undefined
+
+/* */
+
+graph() {
+  changeDate: function() {},
+  addNewClaim: function() {},
+  changeSeries: function() {}
+
+}
+
+/* BACKWARDS */
+angular.module('valueLossPerMonth' ['graph'])
+  .controller: function() {
+
+  }
+
+  TSA MODULE <- CPM($series = airports)/VLPM ($series = airlines) <- GRAPH ($scope.series = ) <- FILEREADER
+
+
+  vlpm(graph) {
+    $scope.type = "airlines"
+
+    var rawResult = graph.findBy(2010, 03, $scope.type, ["delta"])
+    var seiries = rawResults.filter(thatdata => do things).reduce(function)
+
+  }
